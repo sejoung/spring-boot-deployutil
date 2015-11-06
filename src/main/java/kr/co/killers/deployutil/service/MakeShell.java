@@ -70,7 +70,7 @@ public class MakeShell {
 	private String makeDateStr;
 	private Properties configProp;
 	private String projectTypeStr;
-
+/*
 	public static void main(String[] args) {
 		if (args.length != 3) {
 			System.out.println("\nMakeShell [type] [file name] [new file name]");
@@ -79,7 +79,7 @@ public class MakeShell {
 
 		new MakeShell().run(args[0], args[1], args[2]);
 	}
-
+*/
 	public void run(String type, String fileName, String newFileName) {
 		try {
 			init(type);
