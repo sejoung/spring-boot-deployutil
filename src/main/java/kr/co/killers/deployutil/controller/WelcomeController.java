@@ -17,17 +17,28 @@
 package kr.co.killers.deployutil.controller;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import kr.co.killers.deployutil.domain.Test;
+import kr.co.killers.deployutil.service.TestService;
 
 @Controller
 public class WelcomeController {
 
 	@Value("${application.message:Hello World}")
 	private String message = "Hello World";
+
+	@Autowired
+	private TestService testService;
 
 	@RequestMapping("/")
 	public String welcome(Map<String, Object> model) {
@@ -39,6 +50,28 @@ public class WelcomeController {
 	@RequestMapping("/foo")
 	public String foo(Map<String, Object> model) {
 		throw new RuntimeException("Foo");
+	}
+
+	@RequestMapping("/findAll")
+	public String findAll(Map<String, Object> model) {
+
+		List<Test> page = testService.findAll();
+
+		model.put("time", new Date());
+		model.put("datas", page);
+		return "list";
+	}
+
+	@RequestMapping("/findTestAll")
+	public String findTestAll(Map<String, Object> model) {
+
+		Pageable pageable = new PageRequest(0, 20);
+
+		Page<Test> page = testService.findTestAll(pageable);
+
+		model.put("time", new Date());
+		model.put("datas", page);
+		return "data";
 	}
 
 }
