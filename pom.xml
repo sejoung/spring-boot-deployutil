@@ -21,11 +21,14 @@
 	</properties>
 	<repositories>
 		<repository>
-			<id>svnkit.com</id>
-			<name>svnkit.com Repository</name>
-			<url>http://maven.tmatesoft.com/content/repositories/releases/</url>
+			<id>spring-snapshots</id>
+			<name>Spring Snapshots</name>
+			<url>http://repo.spring.io/snapshot</url>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
 		</repository>
-	</repositories>
+    </repositories>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
