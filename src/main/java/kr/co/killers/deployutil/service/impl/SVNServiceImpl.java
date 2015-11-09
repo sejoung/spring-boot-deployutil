@@ -21,7 +21,7 @@ import java.io.File;
 public class SVNServiceImpl implements SVNService {
 
     @Override
-    public void getLatestFileRev(String url, String destPath, String id, String passwd) throws Exception {
+    public void getLatestFileCheckout(String url, String destPath, String id, String passwd) throws Exception {
         SVNRepository repository = null;
         //initiate the reporitory from the url
         repository = SVNRepositoryFactory.create(SVNURL.parseURIDecoded(url));

@@ -19,7 +19,7 @@ public class SVNController {
 
     @RequestMapping("/svn")
     public String svn(Map<String, Object> model) throws Exception {
-        svnService.getLatestFileRev("http://210.218.225.23/svn/cspapi/branches/cspapi", "C:\\svn_temp", "AhnSangHyuk", "ash193cm");
+        svnService.getLatestFileCheckout("http://210.218.225.23/svn/cspapi/branches/cspapi", "C:\\svn_temp", "AhnSangHyuk", "ash193cm");
         return "svn";
     }
 
