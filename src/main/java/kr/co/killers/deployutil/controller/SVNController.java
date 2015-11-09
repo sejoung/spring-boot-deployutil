@@ -19,7 +19,8 @@ public class SVNController {
 
     @RequestMapping("/svn")
     public String svn(Map<String, Object> model) throws Exception {
-        svnService.getLatestFileCheckout("http://210.218.225.23/svn/cspapi/branches/cspapi", "C:\\svn_temp", "AhnSangHyuk", "ash193cm");
+//        svnService.getLatestFileCheckout("http://210.218.225.23/svn/cspapi/branches/cspapi", "C:\\svn_temp", "AhnSangHyuk", "ash193cm");
+        svnService.getRepositorypaths("http://210.218.225.23/svn/cspapi/branches/cspapi", "AhnSangHyuk", "ash193cm", 0, -1);
         return "svn";
     }
 

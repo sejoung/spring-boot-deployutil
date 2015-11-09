@@ -14,12 +14,14 @@ import org.tmatesoft.svn.core.io.SVNRepository;
 import org.tmatesoft.svn.core.io.SVNRepositoryFactory;
 import org.tmatesoft.svn.core.wc.SVNWCUtil;
 
+/**
+ * \spring-boot-deployutil\src\main\java\kr\co\killers\deployutil\service\SVNService.java
+ */
 public class SVNTest {
 
 	public static void main(String[] args) {
 
 		DAVRepositoryFactory.setup();
-		//String url = "";
 		String url = "";
 		String name = "";
 		String password = "";
