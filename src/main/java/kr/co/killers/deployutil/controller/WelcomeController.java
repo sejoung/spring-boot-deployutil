@@ -20,6 +20,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,13 +33,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import kr.co.killers.deployutil.domain.Test;
+import kr.co.killers.deployutil.param.TestParam;
 import kr.co.killers.deployutil.service.TestService;
 
 @Controller
 public class WelcomeController {
 
 	private static final Logger log = LoggerFactory.getLogger(WelcomeController.class);
-	
+
 	@Value("${application.message:Hello World}")
 	private String message = "Hello World";
 
@@ -79,4 +82,11 @@ public class WelcomeController {
 		return "data";
 	}
 
+	@RequestMapping("/save")
+	public String insert(Map<String, Object> model, @Valid TestParam valid) {
+		log.debug("save start");
+		model.put("datas", testService.save(valid));
+
+		return "view";
+	}
 }

@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import kr.co.killers.deployutil.domain.Test;
+import kr.co.killers.deployutil.param.TestParam;
 import kr.co.killers.deployutil.repositories.TestRepository;
 import kr.co.killers.deployutil.service.TestService;
 
@@ -25,6 +26,13 @@ public class TestServiceImpl implements TestService {
 	@Override
 	public List<Test> findAll() {
 		return testRepository.findAll();
+	}
+
+	@Override
+	public Test save(TestParam param) {
+		Test test = new Test();
+		test.setName(param.getName());
+		return testRepository.save(test);
 	}
 
 }

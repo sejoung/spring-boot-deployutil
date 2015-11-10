@@ -12,4 +12,5 @@ public interface TestRepository extends Repository<Test, Long> {
 
 	Page<Test> findAll(Pageable pageable);
 	List<Test> findAll();
+	Test save(Test test);
 }
