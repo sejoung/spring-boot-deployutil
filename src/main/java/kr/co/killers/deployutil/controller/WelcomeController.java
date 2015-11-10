@@ -20,6 +20,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -34,6 +36,8 @@ import kr.co.killers.deployutil.service.TestService;
 @Controller
 public class WelcomeController {
 
+	private static final Logger log = LoggerFactory.getLogger(WelcomeController.class);
+	
 	@Value("${application.message:Hello World}")
 	private String message = "Hello World";
 
@@ -42,6 +46,7 @@ public class WelcomeController {
 
 	@RequestMapping("/")
 	public String welcome(Map<String, Object> model) {
+		log.debug("welcome gogogogo");
 		model.put("time", new Date());
 		model.put("message", this.message);
 		return "welcome";
