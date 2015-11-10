@@ -1,6 +1,9 @@
 package kr.co.killers.deployutil.service.impl;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -28,68 +31,103 @@ import kr.co.killers.deployutil.service.SVNService;
 @Service
 public class SVNServiceImpl implements SVNService {
 
-	@Override
-	public void getLatestFileCheckout(String url, String destPath, String id, String passwd) throws Exception {
-		SVNRepository repository = null;
-		// initiate the reporitory from the url
-		repository = SVNRepositoryFactory.create(SVNURL.parseURIDecoded(url));
+    @Override
+    public Map<String, String> getLatestFileCheckout(String url, String destPath, String id, String passwd, int startRevision, int endRevision) throws Exception {
+        Map<String, String> classNameMap = new HashMap<String, String>();
+        SVNRepository repository = null;
+        repository = SVNRepositoryFactory.create(SVNURL.parseURIEncoded(url));
 
-		// create authentication data
-		ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager(id, passwd);
-		repository.setAuthenticationManager(authManager);
+        ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager(id, passwd);
+        repository.setAuthenticationManager(authManager);
 
-		// output some data to verify connection
-		System.out.println("Repository Root: " + repository.getRepositoryRoot(true));
-		System.out.println("Repository UUID: " + repository.getRepositoryUUID(true));
+        long latestRevision = repository.getLatestRevision();
+        System.out.println("Repository Latest Revision: " + latestRevision);
 
-		// need to identify latest revision
-		long latestRevision = repository.getLatestRevision();
-		System.out.println("Repository Latest Revision: " + latestRevision);
+        SVNClientManager ourClientManager = SVNClientManager.newInstance();
+        ourClientManager.setAuthenticationManager(authManager);
 
-		// create client manager and set authentication
-		SVNClientManager ourClientManager = SVNClientManager.newInstance();
-		ourClientManager.setAuthenticationManager(authManager);
+        // use SVNUpdateClient to do the export
+        SVNUpdateClient updateClient = ourClientManager.getUpdateClient();
+        updateClient.setIgnoreExternals(false);
+        updateClient.doExport(repository.getLocation(), new File(destPath), SVNRevision.create(startRevision), SVNRevision.create(latestRevision), null, true, SVNDepth.INFINITY);
 
-		// use SVNUpdateClient to do the export
-		SVNUpdateClient updateClient = ourClientManager.getUpdateClient();
-		updateClient.setIgnoreExternals(false);
+        Collection logEntries = null;
 
-		updateClient.doExport(repository.getLocation(), new File(destPath), SVNRevision.create(latestRevision), SVNRevision.create(latestRevision), null, true, SVNDepth.INFINITY);
-	}
+        logEntries = repository.log(new String[]{""}, null, startRevision, endRevision, true, true);
 
-	@Override
-	public Map<String, String> getRepositorypaths(String url, String id, String passwd, int startRevision, int endRevision) throws Exception {
-		Map<String, String> classNameMap = new HashMap<String, String>();
-		SVNRepository repository = null;
-		repository = SVNRepositoryFactory.create(SVNURL.parseURIEncoded(url));
-		ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager(id, passwd);
-		repository.setAuthenticationManager(authManager);
+        for (Iterator entries = logEntries.iterator(); entries.hasNext(); ) {
+            SVNLogEntry logEntry = (SVNLogEntry) entries.next();
 
-		Collection logEntries = null;
+            if (logEntry.getChangedPaths().size() > 0) {
 
-		logEntries = repository.log(new String[] { "" }, null, startRevision, endRevision, true, true);
+                Set changedPathsSet = logEntry.getChangedPaths().keySet();
+                for (Iterator changedPaths = changedPathsSet.iterator(); changedPaths.hasNext(); ) {
+                    SVNLogEntryPath entryPath = (SVNLogEntryPath) logEntry.getChangedPaths().get(changedPaths.next());
+                    String key = entryPath.getPath();
+                    String typeValueTemp = classNameMap.get(key);
+                    if (typeValueTemp != null && !"".equals(typeValueTemp)) {
+                        classNameMap.put(key, typeValueTemp + entryPath.getType());
+                    } else {
+                        classNameMap.put(key, String.valueOf(entryPath.getType()));
+                    }
 
-		for (Iterator entries = logEntries.iterator(); entries.hasNext();) {
-			SVNLogEntry logEntry = (SVNLogEntry) entries.next();
+                }
 
-			if (logEntry.getChangedPaths().size() > 0) {
+            }
+        }
+        return classNameMap;
+    }
 
-				Set changedPathsSet = logEntry.getChangedPaths().keySet();
-				for (Iterator changedPaths = changedPathsSet.iterator(); changedPaths.hasNext();) {
-					SVNLogEntryPath entryPath = (SVNLogEntryPath) logEntry.getChangedPaths().get(changedPaths.next());
-					String key = entryPath.getPath();
-					String typeValueTemp = classNameMap.get(key);
-					if (typeValueTemp != null && !"".equals(typeValueTemp)) {
-						classNameMap.put(key, typeValueTemp + entryPath.getType());
-					} else {
-						classNameMap.put(key, String.valueOf(entryPath.getType()));
-					}
+    @Override
+    public Map<String, String> getRepositorypaths(String url, String id, String passwd, int startRevision, int endRevision) throws Exception {
+        Map<String, String> classNameMap = new HashMap<String, String>();
+        SVNRepository repository = null;
+        repository = SVNRepositoryFactory.create(SVNURL.parseURIEncoded(url));
+        ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager(id, passwd);
+        repository.setAuthenticationManager(authManager);
 
-				}
+        Collection logEntries = null;
 
-			}
-		}
+        logEntries = repository.log(new String[]{""}, null, startRevision, endRevision, true, true);
 
-		return classNameMap;
-	}
+        for (Iterator entries = logEntries.iterator(); entries.hasNext(); ) {
+            SVNLogEntry logEntry = (SVNLogEntry) entries.next();
+
+            if (logEntry.getChangedPaths().size() > 0) {
+
+                Set changedPathsSet = logEntry.getChangedPaths().keySet();
+                for (Iterator changedPaths = changedPathsSet.iterator(); changedPaths.hasNext(); ) {
+                    SVNLogEntryPath entryPath = (SVNLogEntryPath) logEntry.getChangedPaths().get(changedPaths.next());
+                    String key = entryPath.getPath();
+                    String typeValueTemp = classNameMap.get(key);
+                    if (typeValueTemp != null && !"".equals(typeValueTemp)) {
+                        classNameMap.put(key, typeValueTemp + entryPath.getType());
+                    } else {
+                        classNameMap.put(key, String.valueOf(entryPath.getType()));
+                    }
+
+                }
+
+            }
+        }
+
+        return classNameMap;
+    }
+
+
+    @Override
+    public void getCheckoutFileList(File destFolder) throws Exception {
+        // todo: C:\checkout.txt -> properties나 constatns로 변경해야됨.
+        BufferedWriter out = new BufferedWriter(new FileWriter("C:\\checkout.txt", true));
+        File[] files = destFolder.listFiles();
+        for (File file : files) {
+            if (file.isDirectory()) {
+                getCheckoutFileList(file);
+            } else {
+                out.write(file.getCanonicalPath());
+                out.newLine();
+            }
+        }
+        out.close();
+    }
 }
