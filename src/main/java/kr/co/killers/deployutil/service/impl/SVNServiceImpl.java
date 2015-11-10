@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import kr.co.killers.deployutil.constants.CommonConstants;
 import org.springframework.stereotype.Service;
 import org.tmatesoft.svn.core.SVNDepth;
 import org.tmatesoft.svn.core.SVNLogEntry;
@@ -32,12 +33,12 @@ import kr.co.killers.deployutil.service.SVNService;
 public class SVNServiceImpl implements SVNService {
 
     @Override
-    public Map<String, String> getLatestFileCheckout(String url, String destPath, String id, String passwd, int startRevision, int endRevision) throws Exception {
+    public Map<String, String> getLatestFileCheckout(String url, String destPath, String id, String password, int startRevision, int endRevision) throws Exception {
         Map<String, String> classNameMap = new HashMap<String, String>();
         SVNRepository repository = null;
         repository = SVNRepositoryFactory.create(SVNURL.parseURIEncoded(url));
 
-        ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager(id, passwd);
+        ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager(id, password);
         repository.setAuthenticationManager(authManager);
 
         long latestRevision = repository.getLatestRevision();
@@ -79,11 +80,11 @@ public class SVNServiceImpl implements SVNService {
     }
 
     @Override
-    public Map<String, String> getRepositorypaths(String url, String id, String passwd, int startRevision, int endRevision) throws Exception {
+    public Map<String, String> getRepositorypaths(String url, String id, String password, int startRevision, int endRevision) throws Exception {
         Map<String, String> classNameMap = new HashMap<String, String>();
         SVNRepository repository = null;
         repository = SVNRepositoryFactory.create(SVNURL.parseURIEncoded(url));
-        ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager(id, passwd);
+        ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager(id, password);
         repository.setAuthenticationManager(authManager);
 
         Collection logEntries = null;
@@ -118,7 +119,7 @@ public class SVNServiceImpl implements SVNService {
     @Override
     public void getCheckoutFileList(File destFolder) throws Exception {
         // todo: C:\checkout.txt -> properties나 constatns로 변경해야됨.
-        BufferedWriter out = new BufferedWriter(new FileWriter("C:\\checkout.txt", true));
+        BufferedWriter out = new BufferedWriter(new FileWriter(CommonConstants.LOCAL_ROOT + "checkout.txt", true));
         File[] files = destFolder.listFiles();
         for (File file : files) {
             if (file.isDirectory()) {

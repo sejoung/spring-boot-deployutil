@@ -1,5 +1,6 @@
 package kr.co.killers.deployutil.controller;
 
+import kr.co.killers.deployutil.constants.CommonConstants;
 import kr.co.killers.deployutil.service.SVNService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,16 +24,25 @@ public class SVNController {
     @Value("${checkout.dest.folder}")
     private String destFolder;
 
+    @Value("${svn.url}")
+    private String svnUrl;
+
+    @Value("${svn.id}")
+    private String svnId;
+
+    @Value("${svn.password}")
+    private String svnPassword;
+
     @Autowired
     private SVNService svnService;
 
     @RequestMapping("/svn")
     public String svn(Map<String, Object> model) throws Exception {
         Map<String, String> checkOut = new HashMap<String, String>();
-        checkOut = svnService.getLatestFileCheckout("http://210.218.225.23/svn/cspapi/branches/cspapi", destFolder, "AhnSangHyuk", "ash193cm", -1, -1);
+        checkOut = svnService.getLatestFileCheckout(svnUrl, CommonConstants.LOCAL_ROOT + destFolder, svnId, svnPassword, Integer.parseInt(CommonConstants.MINUS_ONE), Integer.parseInt(CommonConstants.MINUS_ONE));
         log.debug("{}", checkOut);
-        if(!checkOut.isEmpty()){
-            svnService.getCheckoutFileList(new File(destFolder));
+        if (!checkOut.isEmpty()) {
+            svnService.getCheckoutFileList(new File(CommonConstants.LOCAL_ROOT + destFolder));
         }
 
         return "svn";
