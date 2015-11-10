@@ -10,6 +10,11 @@
 	JSTL URL: ${url}
 	<br>
 	Message: ${message}
+	
+	<form action="save">
+		<input type="text" name="name" value="">
+		<input type="submit" >
+	</form>
 </body>
 
 </html>
