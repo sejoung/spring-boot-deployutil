@@ -1,6 +1,7 @@
 package kr.co.killers.deployutil.controller;
 
 import kr.co.killers.deployutil.constants.CommonConstants;
+import kr.co.killers.deployutil.domain.Project;
 import kr.co.killers.deployutil.service.SVNService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.validation.Valid;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -58,4 +60,25 @@ public class SVNController {
         return "svn";
     }
 
+
+    /**
+     * create by chaidm 2015-11-11
+     * @param model
+     * @return
+     */
+    @RequestMapping("/svn/test")
+    public String svntest(Map<String, Object> model){
+        return "svn";
+    }
+
+
+    @RequestMapping("/test")
+    public String test(Map<String, Object> model, @Valid Project valid) throws Exception {
+        log.debug("controller start");
+        log.debug("project name:", valid.getName());
+        model.put("datas",svnService.test(valid));
+
+        return "view";
+
+    }
 }

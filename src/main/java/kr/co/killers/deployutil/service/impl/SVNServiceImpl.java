@@ -6,6 +6,7 @@ import java.nio.charset.Charset;
 import java.util.*;
 
 import kr.co.killers.deployutil.constants.CommonConstants;
+import kr.co.killers.deployutil.domain.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -164,5 +165,19 @@ public class SVNServiceImpl implements SVNService {
         log.debug("Success: " + success);
 
         return success;
+    }
+
+
+    /**
+     * Created by chaidam on 2015-11-11.
+     */
+    // svn.jsp 에서 입력받은 name 값
+    @Override
+    public Project test(Project project){
+        Project resultproject = new Project();
+        log.debug("SvnServiceImple start");
+        resultproject.setName(project.getName());
+        log.debug("name:",resultproject.getName());
+        return resultproject;
     }
 }
