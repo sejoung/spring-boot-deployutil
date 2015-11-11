@@ -1,16 +1,13 @@
 package kr.co.killers.deployutil.service.impl;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.nio.charset.Charset;
+import java.util.*;
 
 import kr.co.killers.deployutil.constants.CommonConstants;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.tmatesoft.svn.core.SVNDepth;
 import org.tmatesoft.svn.core.SVNLogEntry;
@@ -26,11 +23,14 @@ import org.tmatesoft.svn.core.wc.SVNWCUtil;
 
 import kr.co.killers.deployutil.service.SVNService;
 
+import javax.tools.*;
+
 /**
  * Created by ASH on 2015-11-09.
  */
 @Service
 public class SVNServiceImpl implements SVNService {
+    private static final Logger log = LoggerFactory.getLogger(SVNServiceImpl.class);
 
     @Override
     public Map<String, String> getLatestFileCheckout(String url, String destPath, String id, String password, int startRevision, int endRevision) throws Exception {
@@ -115,20 +115,54 @@ public class SVNServiceImpl implements SVNService {
         return classNameMap;
     }
 
-
     @Override
-    public void getCheckoutFileList(File destFolder) throws Exception {
-        // todo: C:\checkout.txt -> properties나 constatns로 변경해야됨.
-        BufferedWriter out = new BufferedWriter(new FileWriter(CommonConstants.LOCAL_ROOT + "checkout.txt", true));
-        File[] files = destFolder.listFiles();
-        for (File file : files) {
-            if (file.isDirectory()) {
-                getCheckoutFileList(file);
-            } else {
-                out.write(file.getCanonicalPath());
-                out.newLine();
+    public boolean compileComplete(String soruceDir, String destDir, String libDir) throws Exception {
+        // todo: parameter 수정이 필요함. JAVA_VERSION 등..
+        ArrayList<String> filePath = new ArrayList<String>();
+
+        class DirectoryContents {
+            public void displayDirectoryContents(File dir) throws IOException {
+                File[] files = dir.listFiles();
+                for (File file : files) {
+                    if (file.isDirectory()) {
+                        displayDirectoryContents(file);
+                    } else {
+                        filePath.add(file.getCanonicalPath());
+                    }
+                }
             }
         }
-        out.close();
+
+        DirectoryContents dc = new DirectoryContents();
+        dc.displayDirectoryContents(new File(soruceDir));
+
+        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+        DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
+
+        // todo: charset -> parameter 변경
+        StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, Locale.getDefault(), Charset.forName(CommonConstants.CHARSET_UTF8));
+        List<File> sourceFileList = new ArrayList<File>();
+
+        for (int i = 0; i < filePath.size(); i++) {
+            if(filePath.get(i).toUpperCase().contains(".JAVA")) {
+                sourceFileList.add(new File(filePath.get(i)));
+            }
+        }
+
+        Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(sourceFileList);
+
+        // todo: charset -> parameter 변경
+        Iterable<String> compileOptions = Arrays.asList("-encoding", CommonConstants.CHARSET_UTF8, "-d", destDir, "-classpath", libDir);
+        JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, diagnostics, compileOptions, null, compilationUnits);
+        boolean success = task.call();
+
+        for (Diagnostic diagnostic : diagnostics.getDiagnostics()) {
+            log.debug("Error on line %d in %s%n", diagnostic.getLineNumber(), diagnostic.getSource().toString());
+        }
+
+        fileManager.close();
+        log.debug("Success: " + success);
+
+        return success;
     }
 }

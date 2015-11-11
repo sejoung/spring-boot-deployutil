@@ -33,6 +33,15 @@ public class SVNController {
     @Value("${svn.password}")
     private String svnPassword;
 
+    @Value("${compile.sorucedir}")
+    private String soruceDir;
+
+    @Value("${compile.destdir}")
+    private String destDir;
+
+    @Value("${compile.libdir}")
+    private String libDir;
+
     @Autowired
     private SVNService svnService;
 
@@ -42,7 +51,8 @@ public class SVNController {
         checkOut = svnService.getLatestFileCheckout(svnUrl, CommonConstants.LOCAL_ROOT + destFolder, svnId, svnPassword, Integer.parseInt(CommonConstants.MINUS_ONE), Integer.parseInt(CommonConstants.MINUS_ONE));
         log.debug("{}", checkOut);
         if (!checkOut.isEmpty()) {
-            svnService.getCheckoutFileList(new File(CommonConstants.LOCAL_ROOT + destFolder));
+            // todo: svnService.compileComplete parameter properties가 아닌 화면 입력값 또는 DB값으로 변경
+            svnService.compileComplete(soruceDir, destDir, libDir);
         }
 
         return "svn";
