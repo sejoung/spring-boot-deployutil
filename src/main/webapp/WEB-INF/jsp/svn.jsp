@@ -17,18 +17,11 @@
     <div class="form-group">
         <%--<td>id</td>--%>
         <%--<input type="text" class="form-control" name="id" placeholder="id" >--%>
-        <td>name</td>
-        <input type="text" class="form-control" name="name" placeholder="name">
-        <%--<input type="text" class="form-control" id="description" name="description" placeholder="description" width="150px">
-        <input type="text" class="form-control" id="devHostname" name="devHostname" placeholder="devHostname" width="150px">
-        <input type="text" class="form-control" id="testHostname" name="testHostname" placeholder="testHostname" width="150px">
-        <input type="text" class="form-control" id="prodHostname" name="prodHostname" placeholder="prodHostname" width="150px">
-        <input type="text" class="form-control" id="devServerWorkDir" name="devServerWorkDir" placeholder="devServerWorkDir" width="150px">
-        <input type="text" class="form-control" id="testServerWorkDir" name="testServerWorkDir" placeholder="testServerWorkDir" width="150px">
-        <input type="text" class="form-control" id="prodServerWorkDir" name="prodServerWorkDir" placeholder="prodServerWorkDir" width="150px">
-        <input type="text" class="form-control" id="scanPath" name="scanPath" placeholder="scanPath" width="150px">
-        <input type="text" class="form-control" id="projectJdkVersion" name="projectJdkVersion" placeholder="projectJdkVersion" width="150px">
-        <input type="text" class="form-control" id="mavenUseYn" name="mavenUseYn" placeholder="mavenUseYn" width="150px">--%>
+            <td>sourceDir</td><input type="text" class="form-control" name="sourceDir" placeholder="sourceDir">
+            <td>destDir</td><input type="text" class="form-control" name="destDir" placeholder="destDir">
+            <td>libDir</td><input type="text" class="form-control" name="libDir" placeholder="libDir">
+            <td>jdkVersion</td><input type="text" class="form-control" name="jdkVersion" placeholder="jdkVersion">
+            <td>charSet</td><input type="text" class="form-control" name="charSet" placeholder="charSet">
         <input class="btn btn-default" type="submit" value="Submit">
     </div>
 </form>

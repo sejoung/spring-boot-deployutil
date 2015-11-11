@@ -7,6 +7,7 @@ import java.util.*;
 
 import kr.co.killers.deployutil.constants.CommonConstants;
 import kr.co.killers.deployutil.domain.Project;
+import kr.co.killers.deployutil.param.ProjectParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -169,6 +170,72 @@ public class SVNServiceImpl implements SVNService {
 
 
     /**
+     * paramter 수정반영 2015.11.11
+     * @param param
+     * @return
+     * @throws IOException
+     */
+    @Override
+    public boolean compileComplete(ProjectParam param) throws IOException {
+        // todo: parameter 수정이 필요함. JAVA_VERSION 등..
+        ArrayList<String> filePath = new ArrayList<String>();
+
+        String soruceDir = param.getSoruceDir();
+        String destDir = param.getDestDir();
+        String libDir = param.getLibDir();
+        String charSet = param.getCharSet();
+        String jdkVersion = param.getJdkVersion();
+
+        class DirectoryContents {
+            public void displayDirectoryContents(File dir) throws IOException {
+                File[] files = dir.listFiles();
+                for (File file : files) {
+                    if (file.isDirectory()) {
+                        displayDirectoryContents(file);
+                    } else {
+                        filePath.add(file.getCanonicalPath());
+                    }
+                }
+            }
+        }
+
+        DirectoryContents dc = new DirectoryContents();
+        dc.displayDirectoryContents(new File(soruceDir));
+
+        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+        DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
+
+        // todo: charset -> parameter 변경
+        StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, Locale.getDefault(), Charset.forName(charSet));
+        List<File> sourceFileList = new ArrayList<File>();
+
+        for (int i = 0; i < filePath.size(); i++) {
+            if(filePath.get(i).toUpperCase().contains(".JAVA")) {
+                sourceFileList.add(new File(filePath.get(i)));
+            }
+        }
+
+        Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(sourceFileList);
+
+        // todo: charset -> parameter 변경
+        Iterable<String> compileOptions = Arrays.asList("-encoding", charSet, "-d", destDir, "-classpath", libDir);
+        JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, diagnostics, compileOptions, null, compilationUnits);
+        boolean success = task.call();
+
+        for (Diagnostic diagnostic : diagnostics.getDiagnostics()) {
+            log.debug("Error on line %d in %s%n", diagnostic.getLineNumber(), diagnostic.getSource().toString());
+        }
+
+        fileManager.close();
+        log.debug("Success: " + success);
+
+        return success;
+    }
+
+
+
+
+    /**
      * Created by chaidam on 2015-11-11.
      */
     // svn.jsp 에서 입력받은 name 값
@@ -180,4 +247,6 @@ public class SVNServiceImpl implements SVNService {
         log.debug("name:",resultproject.getName());
         return resultproject;
     }
+
+
 }

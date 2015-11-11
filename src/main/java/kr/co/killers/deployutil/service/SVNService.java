@@ -1,8 +1,10 @@
 package kr.co.killers.deployutil.service;
 
 import kr.co.killers.deployutil.domain.Project;
+import kr.co.killers.deployutil.param.ProjectParam;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -13,4 +15,6 @@ public interface SVNService {
     public Map<String, String> getRepositorypaths(String url, String id, String password, int startRevision, int endRevision) throws Exception;
     public boolean compileComplete(String soruceDir, String destDir, String libDir) throws Exception;
     public Project test(Project project);
+
+    public boolean compileComplete(ProjectParam valid) throws IOException;
 }

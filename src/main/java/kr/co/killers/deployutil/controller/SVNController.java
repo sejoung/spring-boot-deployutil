@@ -2,6 +2,7 @@ package kr.co.killers.deployutil.controller;
 
 import kr.co.killers.deployutil.constants.CommonConstants;
 import kr.co.killers.deployutil.domain.Project;
+import kr.co.killers.deployutil.param.ProjectParam;
 import kr.co.killers.deployutil.service.SVNService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +55,7 @@ public class SVNController {
         log.debug("{}", checkOut);
         if (!checkOut.isEmpty()) {
             // todo: svnService.compileComplete parameter properties가 아닌 화면 입력값 또는 DB값으로 변경
+//            svnService.compileComplete(projectParam);
             svnService.compileComplete(soruceDir, destDir, libDir);
         }
 
@@ -71,8 +73,15 @@ public class SVNController {
         return "svn";
     }
 
-
     @RequestMapping("/test")
+    public String test(Map<String, Object> model, @Valid ProjectParam valid) throws Exception {
+        log.debug("test controller start");
+        model.put("datas", svnService.compileComplete(valid));
+        return "view";
+
+    }
+
+  /*  @RequestMapping("/test")
     public String test(Map<String, Object> model, @Valid Project valid) throws Exception {
         log.debug("controller start");
         log.debug("project name:", valid.getName());
@@ -80,5 +89,5 @@ public class SVNController {
 
         return "view";
 
-    }
+    }*/
 }
