@@ -15,10 +15,15 @@ public class ProjectParam {
     /**
      * 테이블 유니크키
      */
-    @NotEmpty
-    private Long id;
+//    @NotEmpty
+    private String id;
 
-    private String soruceDir;
+    private String password;
+
+    private String url;
+
+
+    private String sourceDir;
 
     private String destDir;
 

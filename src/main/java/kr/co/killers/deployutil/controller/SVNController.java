@@ -75,19 +75,11 @@ public class SVNController {
 
     @RequestMapping("/test")
     public String test(Map<String, Object> model, @Valid ProjectParam valid) throws Exception {
-        log.debug("test controller start");
-        model.put("datas", svnService.compileComplete(valid));
-        return "view";
-
-    }
-
-  /*  @RequestMapping("/test")
-    public String test(Map<String, Object> model, @Valid Project valid) throws Exception {
         log.debug("controller start");
-        log.debug("project name:", valid.getName());
+        log.debug("project name:", valid.getSourceDir());
         model.put("datas",svnService.test(valid));
 
         return "view";
 
-    }*/
+    }
 }

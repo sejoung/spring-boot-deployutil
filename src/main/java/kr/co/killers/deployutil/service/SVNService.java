@@ -14,7 +14,7 @@ public interface SVNService {
     public Map<String, String>  getLatestFileCheckout(String url, String destPath, String id, String password, int startRevision, int endRevision) throws Exception;
     public Map<String, String> getRepositorypaths(String url, String id, String password, int startRevision, int endRevision) throws Exception;
     public boolean compileComplete(String soruceDir, String destDir, String libDir) throws Exception;
-    public Project test(Project project);
+    public ProjectParam test(ProjectParam projectParam)throws Exception ;
 
     public boolean compileComplete(ProjectParam valid) throws IOException;
 }
