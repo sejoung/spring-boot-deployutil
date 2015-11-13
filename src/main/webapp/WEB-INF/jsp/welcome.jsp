@@ -11,7 +11,7 @@
 	<br>
 	Message: ${message}
 	
-	<form action="save">
+	<form action="/svn/test">
 		<input type="text" name="name" value="">
 		<input type="submit" >
 	</form>

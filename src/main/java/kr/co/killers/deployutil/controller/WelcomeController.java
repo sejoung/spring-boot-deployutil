@@ -52,7 +52,7 @@ public class WelcomeController {
 		log.debug("welcome gogogogo");
 		model.put("time", new Date());
 		model.put("message", this.message);
-		return "welcome";
+		return "svn";
 	}
 
 	@RequestMapping("/foo")

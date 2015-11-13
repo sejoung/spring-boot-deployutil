@@ -3,10 +3,10 @@
 <html>
 <body>
 	sourceDir:<c:out value="${datas.sourceDir}" /><br>
-	destDir:<c:out value="${datas.destDir}" /><br>
-	libDir:<c:out value="${datas.libDir}" /><br>
-	jdkVersion:<c:out value="${datas.jdkVersion}" /><br>
-	charSet:<c:out value="${datas.charSet}" /><br>
+	sourceWWWDir:<c:out value="${datas.sourceWWWDir}" /><br>
+	sourceLibDir:<c:out value="${datas.sourceLibDir}" /><br>
+	sourceDeployDir:<c:out value="${datas.sourceDeployDir}" /><br>
+	javaVersion:<c:out value="${datas.javaVersion}" /><br>
 
 	<%--<c:out value="${datas.name}" />--%>
 
