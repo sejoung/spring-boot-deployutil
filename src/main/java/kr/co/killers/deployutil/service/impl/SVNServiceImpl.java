@@ -35,12 +35,12 @@ public class SVNServiceImpl implements SVNService {
     private static final Logger log = LoggerFactory.getLogger(SVNServiceImpl.class);
 
     @Override
-    public Map<String, String> getLatestFileCheckout(String url, String destPath, String id, String password, int startRevision, int endRevision) throws Exception {
+    public Map<String, String> getLatestFileCheckout(String svnUrl, String sourceDir, String svnId, String svnPassword, int startRevision, int endRevision) throws Exception {
         Map<String, String> classNameMap = new HashMap<String, String>();
         SVNRepository repository = null;
-        repository = SVNRepositoryFactory.create(SVNURL.parseURIEncoded(url));
+        repository = SVNRepositoryFactory.create(SVNURL.parseURIEncoded(svnUrl));
 
-        ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager(id, password);
+        ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager(svnId, svnPassword);
         repository.setAuthenticationManager(authManager);
 
         long latestRevision = repository.getLatestRevision();
@@ -52,7 +52,7 @@ public class SVNServiceImpl implements SVNService {
         // use SVNUpdateClient to do the export
         SVNUpdateClient updateClient = ourClientManager.getUpdateClient();
         updateClient.setIgnoreExternals(false);
-        updateClient.doExport(repository.getLocation(), new File(destPath), SVNRevision.create(startRevision), SVNRevision.create(latestRevision), null, true, SVNDepth.INFINITY);
+        updateClient.doExport(repository.getLocation(), new File(sourceDir), SVNRevision.create(startRevision), SVNRevision.create(latestRevision), null, true, SVNDepth.INFINITY);
 
         Collection logEntries = null;
 
@@ -82,11 +82,11 @@ public class SVNServiceImpl implements SVNService {
     }
 
     @Override
-    public Map<String, String> getRepositorypaths(String url, String id, String password, int startRevision, int endRevision) throws Exception {
+    public Map<String, String> getRepositorypaths(String svnUrl, String svnId, String svnPassword, int startRevision, int endRevision) throws Exception {
         Map<String, String> classNameMap = new HashMap<String, String>();
         SVNRepository repository = null;
-        repository = SVNRepositoryFactory.create(SVNURL.parseURIEncoded(url));
-        ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager(id, password);
+        repository = SVNRepositoryFactory.create(SVNURL.parseURIEncoded(svnUrl));
+        ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager(svnId, svnPassword);
         repository.setAuthenticationManager(authManager);
 
         Collection logEntries = null;
@@ -118,7 +118,7 @@ public class SVNServiceImpl implements SVNService {
     }
 
     @Override
-    public boolean compileComplete(String soruceDir, String destDir, String libDir) throws Exception {
+    public boolean compileComplete(String sourceDir, String sourceWWWDir, String sourceLibDir, String sourceDeployDir) throws Exception {
         // todo: parameter 수정이 필요함. JAVA_VERSION 등..
         ArrayList<String> filePath = new ArrayList<String>();
 
@@ -136,7 +136,7 @@ public class SVNServiceImpl implements SVNService {
         }
 
         DirectoryContents dc = new DirectoryContents();
-        dc.displayDirectoryContents(new File(soruceDir));
+        dc.displayDirectoryContents(new File(sourceDir));
 
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
@@ -154,7 +154,7 @@ public class SVNServiceImpl implements SVNService {
         Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(sourceFileList);
 
         // todo: charset -> parameter 변경
-        Iterable<String> compileOptions = Arrays.asList("-encoding", CommonConstants.CHARSET_UTF8, "-d", destDir, "-classpath", libDir);
+        Iterable<String> compileOptions = Arrays.asList("-encoding", CommonConstants.CHARSET_UTF8, "-d", sourceDeployDir, "-classpath", sourceLibDir);
         JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, diagnostics, compileOptions, null, compilationUnits);
         boolean success = task.call();
 

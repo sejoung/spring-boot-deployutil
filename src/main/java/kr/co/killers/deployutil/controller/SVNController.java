@@ -36,14 +36,18 @@ public class SVNController {
     @Value("${svn.password}")
     private String svnPassword;
 
-    @Value("${compile.sorucedir}")
-    private String soruceDir;
+    @Value("${compile.sourcedir}")
+    private String sourceDir;
 
-    @Value("${compile.destdir}")
-    private String destDir;
+    @Value("${compile.sourcewwwdir}")
+    private String sourceWWWDir;
 
-    @Value("${compile.libdir}")
-    private String libDir;
+    @Value("${compile.sourcelibdir}")
+    private String sourceLibDir;
+
+    @Value("${compile.deploydir}")
+    private String sourceDeployDir;
+
 
     @Autowired
     private SVNService svnService;
@@ -55,8 +59,7 @@ public class SVNController {
         log.debug("{}", checkOut);
         if (!checkOut.isEmpty()) {
             // todo: svnService.compileComplete parameter properties가 아닌 화면 입력값 또는 DB값으로 변경
-//            svnService.compileComplete(projectParam);
-            svnService.compileComplete(soruceDir, destDir, libDir);
+            svnService.compileComplete(sourceDir, sourceWWWDir, sourceLibDir, sourceDeployDir);
         }
 
         return "svn";
@@ -85,7 +88,7 @@ public class SVNController {
     public String test(Map<String, Object> model, @Valid Project valid) throws Exception {
         log.debug("controller start");
         log.debug("project name:", valid.getName());
-        model.put("datas",svnService.test(valid));
+        model.put("datas", svnService.test(valid));
 
         return "view";
 
