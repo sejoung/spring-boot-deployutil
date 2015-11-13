@@ -15,16 +15,34 @@ public class ProjectParam {
     /**
      * 테이블 유니크키
      */
-    @NotEmpty
-    private Long id;
+//    @NotEmpty
+    private String svnId;
 
-    private String soruceDir;
+    private String svnPassword;
+
+    private int startRevision;
+
+    private int endRevision;
+
+    private String svnUrl;
+
+    private String sourceDir;
+
+    private String sourceWWWDir;
+
+    private String sourceLibDir;
+
+    private String sourceDeployDir;
+
+    private String tomcatLibPath;
 
     private String destDir;
 
-    private String libDir;
+    private String javaVersion;
 
-    private String jdkVersion;
+    private String javaLibPath;
 
     private String charSet;
+
+
 }

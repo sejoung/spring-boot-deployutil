@@ -13,10 +13,9 @@ import java.util.Map;
  */
 public interface SVNService {
     public Map<String, String>  getLatestFileCheckout(String svnUrl, String sourceDir, String svnId, String svnPassword, int startRevision, int endRevision) throws Exception;
+    public Map<String, String>  getLatestFileCheckout(ProjectParam param) throws Exception;
     public Map<String, String> getRepositorypaths(String svnUrl, String svnId, String svnPassword, int startRevision, int endRevision) throws Exception;
     public boolean compileComplete(String sourceDir, String sourceWWWDir, String sourceLibDir, String sourceDeployDir) throws Exception;
-    public Project test(Project project);
-
     public boolean compileComplete(ProjectParam valid) throws IOException;
 
     public boolean svnConnectionCheck(TestParam valid) throws Exception;

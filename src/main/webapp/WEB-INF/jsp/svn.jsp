@@ -17,11 +17,17 @@
     <div class="form-group">
         <%--<td>id</td>--%>
         <%--<input type="text" class="form-control" name="id" placeholder="id" >--%>
+            <td>svnId</td><input type="text" class="form-control" name="svnId" placeholder="svnId">
+            <td>svnPassword</td><input type="text" class="form-control" name="svnPassword" placeholder="svnPassword">
+            <td>svnUrl</td><input type="text" class="form-control" name="svnUrl" placeholder="svnUrl">
             <td>sourceDir</td><input type="text" class="form-control" name="sourceDir" placeholder="sourceDir">
-            <td>destDir</td><input type="text" class="form-control" name="destDir" placeholder="destDir">
-            <td>libDir</td><input type="text" class="form-control" name="libDir" placeholder="libDir">
-            <td>jdkVersion</td><input type="text" class="form-control" name="jdkVersion" placeholder="jdkVersion">
-            <td>charSet</td><input type="text" class="form-control" name="charSet" placeholder="charSet">
+            <td>startRevision</td><input type="text" class="form-control" name="startRevision" placeholder="startRevision">
+            <td>endRevision</td><input type="text" class="form-control" name="endRevision" placeholder="endRevision">
+            <td>javaVersion</td><input type="text" class="form-control" name="javaVersion" placeholder="javaVersion">
+            <td>javaLibPath</td><input type="text" class="form-control" name="javaLibPath" placeholder="javaLibPath">
+            <td>sourceDeployDir</td><input type="text" class="form-control" name="sourceDeployDir" placeholder="sourceDeployDir">
+            <td>sourceLibDir</td><input type="text" class="form-control" name="sourceLibDir" placeholder="sourceLibDir">
+            <td>tomcatLibPath</td><input type="text" class="form-control" name="tomcatLibPath" placeholder="tomcatLibPath">
         <input class="btn btn-default" type="submit" value="Submit">
     </div>
 </form>

@@ -48,7 +48,6 @@ public class SVNController {
     @Value("${compile.deploydir}")
     private String sourceDeployDir;
 
-
     @Autowired
     private SVNService svnService;
 
@@ -62,7 +61,7 @@ public class SVNController {
             svnService.compileComplete(sourceDir, sourceWWWDir, sourceLibDir, sourceDeployDir);
         }
 
-        return "svn";
+        return "view";
     }
 
 
@@ -71,26 +70,23 @@ public class SVNController {
      * @param model
      * @return
      */
-    @RequestMapping("/svn/test")
-    public String svntest(Map<String, Object> model){
-        return "svn";
-    }
+//    @RequestMapping("/svn/test")
+//    public String svntest(Map<String, Object> model){
+//        return "svn";
+//    }
 
     @RequestMapping("/test")
     public String test(Map<String, Object> model, @Valid ProjectParam valid) throws Exception {
         log.debug("test controller start");
-        model.put("datas", svnService.compileComplete(valid));
+        Map<String, String> checkOut = new HashMap<String, String>();
+        checkOut = svnService.getLatestFileCheckout(valid);
+        log.debug("{}", checkOut);
+        if (!checkOut.isEmpty()) {
+            // todo: svnService.compileComplete parameter properties가 아닌 화면 입력값 또는 DB값으로 변경
+            model.put("datas", svnService.compileComplete(valid));
+        }
+
         return "view";
 
     }
-
-  /*  @RequestMapping("/test")
-    public String test(Map<String, Object> model, @Valid Project valid) throws Exception {
-        log.debug("controller start");
-        log.debug("project name:", valid.getName());
-        model.put("datas", svnService.test(valid));
-
-        return "view";
-
-    }*/
 }
