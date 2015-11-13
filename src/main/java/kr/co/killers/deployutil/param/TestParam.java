@@ -7,7 +7,15 @@ import lombok.Data;
 @Data
 public class TestParam {
 
-	@NotEmpty
 	private String name;
+
+	@NotEmpty
+	private String svnUrl;
+
+	@NotEmpty
+	private String svnId;
+
+	@NotEmpty
+	private String svnPassword;
 
 }

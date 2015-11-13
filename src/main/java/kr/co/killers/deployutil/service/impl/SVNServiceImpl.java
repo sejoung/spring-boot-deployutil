@@ -8,6 +8,7 @@ import java.util.*;
 import kr.co.killers.deployutil.constants.CommonConstants;
 import kr.co.killers.deployutil.domain.Project;
 import kr.co.killers.deployutil.param.ProjectParam;
+import kr.co.killers.deployutil.param.TestParam;
 import kr.co.killers.deployutil.util.CommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,8 +39,7 @@ public class SVNServiceImpl implements SVNService {
     @Override
     public Map<String, String> getLatestFileCheckout(String svnUrl, String sourceDir, String svnId, String svnPassword, int startRevision, int endRevision) throws Exception {
         Map<String, String> classNameMap = new HashMap<String, String>();
-        SVNRepository repository = null;
-        repository = SVNRepositoryFactory.create(SVNURL.parseURIEncoded(svnUrl));
+        SVNRepository repository = SVNRepositoryFactory.create(SVNURL.parseURIEncoded(svnUrl));
 
         ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager(svnId, svnPassword);
         repository.setAuthenticationManager(authManager);
@@ -85,8 +85,7 @@ public class SVNServiceImpl implements SVNService {
     @Override
     public Map<String, String> getRepositorypaths(String svnUrl, String svnId, String svnPassword, int startRevision, int endRevision) throws Exception {
         Map<String, String> classNameMap = new HashMap<String, String>();
-        SVNRepository repository = null;
-        repository = SVNRepositoryFactory.create(SVNURL.parseURIEncoded(svnUrl));
+        SVNRepository repository = SVNRepositoryFactory.create(SVNURL.parseURIEncoded(svnUrl));
         ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager(svnId, svnPassword);
         repository.setAuthenticationManager(authManager);
 
@@ -262,5 +261,24 @@ public class SVNServiceImpl implements SVNService {
         return resultproject;
     }
 
+    @Override
+    public boolean svnConnectionCheck(TestParam valid) throws Exception {
+        boolean rtn = false;
 
+        log.debug("", valid);
+
+        SVNRepository repository = SVNRepositoryFactory.create(SVNURL.parseURIEncoded(valid.getSvnUrl()));
+
+        ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager(valid.getSvnId(), valid.getSvnPassword());
+        repository.setAuthenticationManager(authManager);
+
+        if(!String.valueOf(repository.getLatestRevision()).isEmpty()) {
+            rtn = true;
+        }
+
+        log.debug("LOGIN SUCCESS : ", String.valueOf(repository.getLatestRevision()).isEmpty());
+        log.debug("SUCCESS : ", repository.getLatestRevision());
+
+        return rtn;
+    }
 }

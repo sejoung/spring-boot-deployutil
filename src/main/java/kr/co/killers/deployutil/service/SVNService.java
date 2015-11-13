@@ -2,6 +2,7 @@ package kr.co.killers.deployutil.service;
 
 import kr.co.killers.deployutil.domain.Project;
 import kr.co.killers.deployutil.param.ProjectParam;
+import kr.co.killers.deployutil.param.TestParam;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,4 +18,6 @@ public interface SVNService {
     public Project test(Project project);
 
     public boolean compileComplete(ProjectParam valid) throws IOException;
+
+    public boolean svnConnectionCheck(TestParam valid) throws Exception;
 }
