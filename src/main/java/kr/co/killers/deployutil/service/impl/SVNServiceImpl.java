@@ -8,6 +8,7 @@ import java.util.*;
 import kr.co.killers.deployutil.constants.CommonConstants;
 import kr.co.killers.deployutil.domain.Project;
 import kr.co.killers.deployutil.param.ProjectParam;
+import kr.co.killers.deployutil.util.CommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -120,46 +121,59 @@ public class SVNServiceImpl implements SVNService {
     @Override
     public boolean compileComplete(String sourceDir, String sourceWWWDir, String sourceLibDir, String sourceDeployDir) throws Exception {
         // todo: parameter 수정이 필요함. JAVA_VERSION 등..
-        ArrayList<String> filePath = new ArrayList<String>();
+        String javaVersion = "C:\\Program Files\\Java\\jdk1.7.0_79\\jre";
+        String javaLibPath = "C:\\Program Files\\Java\\jdk1.7.0_79\\lib";
+        String tomcatLibPath = "C:\\Program Files\\Apache\\apache-tomcat-7.0.62\\lib";
+
+        File[] sourceJars = new File(sourceLibDir).listFiles(File::isFile);
+        File[] javaJars = new File(javaLibPath).listFiles(File::isFile);
+        File[] tomcatJars = new File(tomcatLibPath).listFiles(File::isFile);
 
         class DirectoryContents {
-            public void displayDirectoryContents(File dir) throws IOException {
-                File[] files = dir.listFiles();
+            ArrayList<String> filePath = new ArrayList<String>();
+            public ArrayList<String> displayDirectoryContents(String dir) throws IOException {
+                File[] files = new File(dir).listFiles();
                 for (File file : files) {
                     if (file.isDirectory()) {
-                        displayDirectoryContents(file);
+                        displayDirectoryContents(file.getCanonicalPath());
                     } else {
                         filePath.add(file.getCanonicalPath());
                     }
                 }
+                return filePath;
             }
         }
 
-        DirectoryContents dc = new DirectoryContents();
-        dc.displayDirectoryContents(new File(sourceDir));
-
+        System.setProperty("java.home", javaVersion);
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         DiagnosticCollector<JavaFileObject> diagnostics = new DiagnosticCollector<JavaFileObject>();
 
-        // todo: charset -> parameter 변경
+        // TODO: charset -> parameter 변경
         StandardJavaFileManager fileManager = compiler.getStandardFileManager(diagnostics, Locale.getDefault(), Charset.forName(CommonConstants.CHARSET_UTF8));
         List<File> sourceFileList = new ArrayList<File>();
-
-        for (int i = 0; i < filePath.size(); i++) {
-            if(filePath.get(i).toUpperCase().contains(".JAVA")) {
-                sourceFileList.add(new File(filePath.get(i)));
-            }
-        }
+        DirectoryContents dc = new DirectoryContents();
+        dc.displayDirectoryContents(sourceDir).stream().filter((String file_java) -> file_java.toUpperCase().contains(".JAVA")).forEach(file_java -> sourceFileList.add(new File(file_java)));
 
         Iterable<? extends JavaFileObject> compilationUnits = fileManager.getJavaFileObjectsFromFiles(sourceFileList);
 
-        // todo: charset -> parameter 변경
-        Iterable<String> compileOptions = Arrays.asList("-encoding", CommonConstants.CHARSET_UTF8, "-d", sourceDeployDir, "-classpath", sourceLibDir);
+        // TODO: charset -> parameter 변경
+        ArrayList<String> compileOptions = new ArrayList<String>();
+        compileOptions.add("-encoding");
+        compileOptions.add(CommonConstants.CHARSET_UTF8);
+        compileOptions.add("-d");
+        compileOptions.add(sourceDeployDir);
+        compileOptions.add("-cp");
+        compileOptions.add(CommonUtil.arrayToString(sourceJars, ";") + CommonUtil.arrayToString(javaJars, ";") + CommonUtil.arrayToString(tomcatJars, ";"));
+        compileOptions.add("-target");
+        compileOptions.add("1.7");
+        compileOptions.add("-verbose");
+        compileOptions.add("-Xlint:none");
+
         JavaCompiler.CompilationTask task = compiler.getTask(null, fileManager, diagnostics, compileOptions, null, compilationUnits);
         boolean success = task.call();
 
         for (Diagnostic diagnostic : diagnostics.getDiagnostics()) {
-            log.debug("Error on line %d in %s%n", diagnostic.getLineNumber(), diagnostic.getSource().toString());
+            log.debug(diagnostic.getSource().toString()+"Line : "+diagnostic.getLineNumber()+" : "+ diagnostic.getCode());
         }
 
         fileManager.close();
