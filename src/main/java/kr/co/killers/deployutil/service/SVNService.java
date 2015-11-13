@@ -11,10 +11,10 @@ import java.util.Map;
  * Created by ASH on 2015-11-09.
  */
 public interface SVNService {
-    public Map<String, String>  getLatestFileCheckout(String url, String destPath, String id, String password, int startRevision, int endRevision) throws Exception;
-    public Map<String, String> getRepositorypaths(String url, String id, String password, int startRevision, int endRevision) throws Exception;
-    public boolean compileComplete(String soruceDir, String destDir, String libDir) throws Exception;
-    public ProjectParam test(ProjectParam projectParam)throws Exception ;
+    public Map<String, String>  getLatestFileCheckout(String svnUrl, String sourceDir, String svnId, String svnPassword, int startRevision, int endRevision) throws Exception;
+    public Map<String, String> getRepositorypaths(String svnUrl, String svnId, String svnPassword, int startRevision, int endRevision) throws Exception;
+    public boolean compileComplete(String sourceDir, String sourceWWWDir, String sourceLibDir, String sourceDeployDir) throws Exception;
+    public Project test(Project project);
 
     public boolean compileComplete(ProjectParam valid) throws IOException;
 }
