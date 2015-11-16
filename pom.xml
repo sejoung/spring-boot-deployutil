@@ -118,12 +118,10 @@
             <artifactId>svnkit</artifactId>
             <version>${svnkit.version}</version>
         </dependency>
-        <!--
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
-        -->
     </dependencies>
     <build>
         <finalName>${project.name}-${project.version}</finalName>

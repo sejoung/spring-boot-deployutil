@@ -19,7 +19,6 @@
 		<div><label> User Name : <input type="text" name="svnId" value="AhnSangHyuk" /> </label></div>
 		<div><label> Password: <input type="password" name="svnPassword" value="dkstkdgur" /> </label></div>
 		<div><input type="submit" value="Sign In"/></div>
-	</form>
 </body>
 
 </html>

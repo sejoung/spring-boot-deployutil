@@ -52,7 +52,7 @@ public class SVNController {
     private SVNService svnService;
 
     @RequestMapping("/svn")
-    public String svn(Map<String, Object> model) throws Exception {
+    public String svn() throws Exception {
         Map<String, String> checkOut = new HashMap<String, String>();
         checkOut = svnService.getLatestFileCheckout(svnUrl, CommonConstants.LOCAL_ROOT + destFolder, svnId, svnPassword, Integer.parseInt(CommonConstants.MINUS_ONE), Integer.parseInt(CommonConstants.MINUS_ONE));
         log.debug("{}", checkOut);
@@ -88,5 +88,11 @@ public class SVNController {
 
         return "view";
 
+    }
+
+    @RequestMapping("/svnlist")
+    public String svnList() throws Exception {
+        log.debug("SVN_LIST");
+        return "svnlist";
     }
 }

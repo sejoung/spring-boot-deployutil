@@ -9,7 +9,6 @@ public class TestParam {
 
 	private String name;
 
-	@NotEmpty
 	private String svnUrl;
 
 	@NotEmpty

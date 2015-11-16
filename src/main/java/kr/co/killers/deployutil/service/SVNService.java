@@ -18,5 +18,5 @@ public interface SVNService {
     public boolean compileComplete(String sourceDir, String sourceWWWDir, String sourceLibDir, String sourceDeployDir) throws Exception;
     public boolean compileComplete(ProjectParam valid) throws IOException;
 
-    public boolean svnConnectionCheck(TestParam valid) throws Exception;
+    public boolean svnConnectionCheck(String svnId, String svnPassword);
 }

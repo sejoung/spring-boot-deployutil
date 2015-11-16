@@ -47,13 +47,14 @@ public class WelcomeController {
 	@Autowired
 	private TestService testService;
 
-	@RequestMapping("/")
-	public String welcome(Map<String, Object> model) {
-		log.debug("welcome gogogogo");
-		model.put("time", new Date());
-		model.put("message", this.message);
-		return "svn";
-	}
+//	@RequestMapping("/")
+//	public String welcome(Map<String, Object> model) {
+//		log.debug("welcome gogogogo");
+//		model.put("time", new Date());
+//		model.put("message", this.message);
+////		return "svn";
+//		return "welcome";
+//	}
 
 	@RequestMapping("/foo")
 	public String foo(Map<String, Object> model) {

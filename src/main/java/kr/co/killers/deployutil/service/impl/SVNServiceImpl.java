@@ -6,17 +6,14 @@ import java.nio.charset.Charset;
 import java.util.*;
 
 import kr.co.killers.deployutil.constants.CommonConstants;
-import kr.co.killers.deployutil.domain.Project;
+import kr.co.killers.deployutil.controller.SVNController;
 import kr.co.killers.deployutil.param.ProjectParam;
 import kr.co.killers.deployutil.param.TestParam;
 import kr.co.killers.deployutil.util.CommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-import org.tmatesoft.svn.core.SVNDepth;
-import org.tmatesoft.svn.core.SVNLogEntry;
-import org.tmatesoft.svn.core.SVNLogEntryPath;
-import org.tmatesoft.svn.core.SVNURL;
+import org.tmatesoft.svn.core.*;
 import org.tmatesoft.svn.core.auth.ISVNAuthenticationManager;
 import org.tmatesoft.svn.core.io.SVNRepository;
 import org.tmatesoft.svn.core.io.SVNRepositoryFactory;
@@ -34,7 +31,7 @@ import javax.tools.*;
  */
 @Service
 public class SVNServiceImpl implements SVNService {
-    private static final Logger log = LoggerFactory.getLogger(SVNServiceImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(SVNController.class);
 
     @Override
     public Map<String, String> getLatestFileCheckout(String svnUrl, String sourceDir, String svnId, String svnPassword, int startRevision, int endRevision) throws Exception {
@@ -130,6 +127,7 @@ public class SVNServiceImpl implements SVNService {
 
         class DirectoryContents {
             ArrayList<String> filePath = new ArrayList<String>();
+
             public ArrayList<String> displayDirectoryContents(String dir) throws IOException {
                 File[] files = new File(dir).listFiles();
                 for (File file : files) {
@@ -172,7 +170,7 @@ public class SVNServiceImpl implements SVNService {
         boolean success = task.call();
 
         for (Diagnostic diagnostic : diagnostics.getDiagnostics()) {
-            log.debug(diagnostic.getSource().toString()+"Line : "+diagnostic.getLineNumber()+" : "+ diagnostic.getCode());
+            log.debug(diagnostic.getSource().toString() + "Line : " + diagnostic.getLineNumber() + " : " + diagnostic.getCode());
         }
 
         fileManager.close();
@@ -184,6 +182,7 @@ public class SVNServiceImpl implements SVNService {
 
     /**
      * 2015.11.13 ProjectParam Vo 추가한 형태 메소드로 수정
+     *
      * @param param
      * @return
      * @throws Exception
@@ -197,11 +196,10 @@ public class SVNServiceImpl implements SVNService {
         String sourceDir = param.getSourceDir();
         int startRevision = param.getStartRevision();
         int endRevision = param.getEndRevision();
-        log.debug("svnUrl:",svnUrl);
-        log.debug("svnId:",svnId);
-        log.debug("svnPassword:",svnPassword);
-        log.debug("sourceDir:",sourceDir);
-
+        log.debug("svnUrl:", svnUrl);
+        log.debug("svnId:", svnId);
+        log.debug("svnPassword:", svnPassword);
+        log.debug("sourceDir:", sourceDir);
 
 
         Map<String, String> classNameMap = new HashMap<String, String>();
@@ -252,6 +250,7 @@ public class SVNServiceImpl implements SVNService {
 
     /**
      * 2015.11.13 ProjectParam Vo 추가한 형태 메소드로 수정
+     *
      * @param param
      * @return
      * @throws IOException
@@ -332,39 +331,25 @@ public class SVNServiceImpl implements SVNService {
         return success;
     }
 
-
-
-
-    /**
-     * Created by chaidam on 2015-11-11.
-     */
-    // svn.jsp 에서 입력받은 name 값
     @Override
-    public Project test(Project project){
-        Project resultproject = new Project();
-        log.debug("SvnServiceImple start");
-        resultproject.setName(project.getName());
-        log.debug("name:",resultproject.getName());
-        return resultproject;
-    }
+    public boolean svnConnectionCheck(String svnId, String svnPassword) {
 
-    @Override
-    public boolean svnConnectionCheck(TestParam valid) throws Exception {
+        log.debug("SVN INFO {}", svnId + ";" + svnPassword);
+
         boolean rtn = false;
 
-        log.debug("", valid);
+        try {
+            SVNRepository repository = SVNRepositoryFactory.create(SVNURL.parseURIEncoded(svnId));
+            ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager(svnId, svnPassword);
+            repository.setAuthenticationManager(authManager);
 
-        SVNRepository repository = SVNRepositoryFactory.create(SVNURL.parseURIEncoded(valid.getSvnUrl()));
-
-        ISVNAuthenticationManager authManager = SVNWCUtil.createDefaultAuthenticationManager(valid.getSvnId(), valid.getSvnPassword());
-        repository.setAuthenticationManager(authManager);
-
-        if(!String.valueOf(repository.getLatestRevision()).isEmpty()) {
+            repository.testConnection();
             rtn = true;
+        } catch (SVNException svn) {
+            rtn = false;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        log.debug("LOGIN SUCCESS : ", String.valueOf(repository.getLatestRevision()).isEmpty());
-        log.debug("SUCCESS : ", repository.getLatestRevision());
 
         return rtn;
     }
