@@ -25,21 +25,25 @@ public class ShellUtil {
 			String code = classNameMap.get(key);
 			String fileExt = getFileExt(fileName);
 			String varName = "";
-			String path = key.replaceAll("/ADP_ADMIN/branches/ADP_ADMIN_UPLUSCLUB/src", "").replaceAll(fileName, "");
+			
+			
 			boolean isNew = false;
 
 			if ("java".equals(fileExt)) {
-				varName = "";
+				String path = key.replaceAll("/ADP_ADMIN/branches/ADP_ADMIN_UPLUSCLUB/src", "").replaceAll(fileName, "");
+				varName = "java";
 				writeShell(copyBuffer, copyCheckBuffer, backupBuffer, recoveryBuffer, recoveryCheckBuffer, copyDir, varName, fileName, path, backupDir, isNew);
 				writeShell(copyBuffer, copyCheckBuffer, backupBuffer, recoveryBuffer, recoveryCheckBuffer, copyDir, varName, fileName.replace(".java", ".class"), path, backupDir, isNew);
 			} else if ("jsp".equals(fileExt)) {
-				varName = "";
+				String path = key.replaceAll("/ADP_ADMIN/branches/ADP_ADMIN_UPLUSCLUB/web/WEB-INF/", "").replaceAll(fileName, "");
+				varName = "jsp";
 				writeShell(copyBuffer, copyCheckBuffer, backupBuffer, recoveryBuffer, recoveryCheckBuffer, copyDir, varName, fileName, path, backupDir, isNew);
 			} else if ("xml".equals(fileExt)) {
-				varName = "";
+				String path = key.replaceAll("/ADP_ADMIN/branches/ADP_ADMIN_UPLUSCLUB/web", "").replaceAll(fileName, "");
+				varName = "xml";
 				writeShell(copyBuffer, copyCheckBuffer, backupBuffer, recoveryBuffer, recoveryCheckBuffer, copyDir, varName, fileName, path, backupDir, isNew);
 			} else {
-
+				
 			}
 
 		}
