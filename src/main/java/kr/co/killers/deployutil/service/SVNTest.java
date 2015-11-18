@@ -36,11 +36,9 @@ public class SVNTest {
 		Map<String, String> classNameMap = new HashMap<String, String>();
 
 		DAVRepositoryFactory.setup();
-		// String url =
-		// "http://183.98.48.161/svn/umarket/ADP/branches/ADP_UPLUSCLUB";
-		String url = "http://183.98.48.161/svn/umarket/ADP_ADMIN/branches/ADP_ADMIN_UPLUSCLUB";
-		String name = "sanaes";
-		String password = "1111";
+		String url = "";
+		String name = "";
+		String password = "";
 		long startRevision = 0;
 		long endRevision = -1; // HEAD (the latest) revision
 
